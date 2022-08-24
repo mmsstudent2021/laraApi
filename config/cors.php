@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['http://localhost:3300','http://127.0.0.1:5500',"*.mms-it.com","mms-it.*"],
 
     'allowed_origins_patterns' => [],
 
