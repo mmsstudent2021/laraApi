@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +43,10 @@ class ApiAuthController extends Controller
         ]);
         if(Auth::attempt($request->only(['email','password']))){
             $token = Auth::user()->createToken("phone")->plainTextToken;
-            return response()->json($token);
+            return response()->json([
+                "token" => $token,
+                "auth" => new UserResource(Auth::user())
+            ]);
         }
         return response()->json(["message"=>"User Not Found"],401);
     }
