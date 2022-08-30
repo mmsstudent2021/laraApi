@@ -21,18 +21,25 @@ class ApiAuthController extends Controller
         ]);
 
 
+
+
         $user = User::create([
            "name" => $request->name,
            "email" => $request->email,
            "password" => Hash::make($request->password)
         ]);
 
-        if(Auth::attempt($request->only(['email','password']))){
-            $token = Auth::user()->createToken("phone")->plainTextToken;
-            return response()->json($token);
-        }
 
-        return response()->json(["message"=>"User Not Found"],401);
+
+//        if(Auth::attempt($request->only(['email','password']))){
+//            $token = Auth::user()->createToken("phone")->plainTextToken;
+//            return response()->json($token);
+//        }
+
+        return response()->json([
+            "message" => "User Created",
+            "success" => true
+        ],200);
 
     }
 
@@ -41,19 +48,30 @@ class ApiAuthController extends Controller
            "email" => "required",
            "password" => "required|min:8"
         ]);
+
+
         if(Auth::attempt($request->only(['email','password']))){
             $token = Auth::user()->createToken("phone")->plainTextToken;
             return response()->json([
+                "message" => "Login Successful",
+                "success" => true,
                 "token" => $token,
                 "auth" => new UserResource(Auth::user())
             ]);
         }
-        return response()->json(["message"=>"User Not Found"],401);
+        return response()->json([
+            "message" => "User Not Found",
+            "success" => false
+        ],401);
     }
 
     public function logout(){
         Auth::user()->currentAccessToken()->delete();
-        return response()->json(["message"=>"logout successfully"],204);
+//        return response()->json(["message"=>"logout successfully"],204);
+        return response()->json([
+            "message" => "Logout successful",
+            "success" => true
+        ]);
     }
 
     public function logoutAll(){
