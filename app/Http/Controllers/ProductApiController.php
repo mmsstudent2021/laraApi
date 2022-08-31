@@ -30,6 +30,9 @@ class ProductApiController extends Controller
      */
     public function store(Request $request)
     {
+
+        sleep(5);
+
         $request->validate([
            "name" => "required|min:3|max:50",
            "price" => "required|numeric|min:1",
@@ -37,6 +40,8 @@ class ProductApiController extends Controller
             "photos" => "required",
             "photos.*" => "file|mimes:jpeg,png|max:512"
         ]);
+
+//        return $request;
 
 //        return Auth::user();
 
@@ -59,7 +64,8 @@ class ProductApiController extends Controller
         $product->photos()->saveMany($photos);
 
         return response()->json([
-            "message" => "success",
+            "message" => "Product Created",
+            "success" => true,
             "product" => new ProductResource($product)
         ]);
     }
