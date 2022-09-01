@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductApiController extends Controller
 {
+
+    public function __construct()
+    {
+//        sleep(1);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +23,7 @@ class ProductApiController extends Controller
      */
     public function index()
     {
-        $products = Product::latest("id")->paginate(10);
+        $products = Product::latest("id")->paginate(5)->onEachSide(1);
 //        return response()->json($products);
         return ProductResource::collection($products);
     }
@@ -31,7 +37,6 @@ class ProductApiController extends Controller
     public function store(Request $request)
     {
 
-        sleep(5);
 
         $request->validate([
            "name" => "required|min:3|max:50",
@@ -95,6 +100,7 @@ class ProductApiController extends Controller
     public function update(Request $request, $id)
     {
 
+
         $request->validate([
             "name" => "nullable|min:3|max:50",
             "price" => "nullable|numeric|min:1",
@@ -119,7 +125,11 @@ class ProductApiController extends Controller
         }
         $product->update();
 
-        return response()->json($product);
+        return response()->json([
+            "message" => "Product Update",
+            "success" => true,
+            "product" => new ProductResource($product)
+        ]);
     }
 
     /**
@@ -136,6 +146,6 @@ class ProductApiController extends Controller
         }
         $product->delete();
 
-        return response()->json(["message"=>"Product is not deleted"],204);
+        return response()->json(["message"=>"Product is not deleted"]);
     }
 }
