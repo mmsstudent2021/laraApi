@@ -23,7 +23,11 @@ class ProductApiController extends Controller
      */
     public function index()
     {
-        $products = Product::latest("id")->paginate(5)->onEachSide(1);
+        $products = Product::when(request('keyword'),fn($q)=>$q->where('name','like',"%".request('keyword')."%"))
+            ->latest("id")
+            ->paginate(5)
+            ->withQueryString()
+            ->onEachSide(1);
 //        return response()->json($products);
         return ProductResource::collection($products);
     }
